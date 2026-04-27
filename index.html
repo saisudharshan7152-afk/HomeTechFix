@@ -1,106 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HomeTech Fix</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0a0f2c;
+  color: white;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background: #060b22;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  width: 40px;
+  margin-right: 10px;
+}
+
+nav a {
+  color: white;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.hero {
+  text-align: center;
+  margin-top: 80px;
+}
+
+.booking {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.card {
+  background: #1c223d;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+input {
+  display: block;
+  margin: 10px 0;
+  padding: 10px;
+  width: 250px;
+}
+
+button {
+  padding: 10px;
+  width: 100%;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.popup {
+  display: none;
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-box {
+  background: white;
+  color: black;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.booking-card {
+  background: #1c223d;
+  padding: 15px;
+  margin: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+  <div class="logo">
+    <img src="logo.png">
+    <h2>HomeTech Fix</h2>
+  </div>
+
+  <nav>
+    <a onclick="logout()">Logout</a>
+    <a onclick="showHome()">Home</a>
+    <a onclick="showBooking()">Book</a>
+    <a onclick="showMyBookings()">My Bookings</a>
+  </nav>
+</header>
+
+<!-- HOME -->
+<section id="homeSection" class="hero">
+  <h2>Fix Your Home, The Smart Way</h2>
+  <button onclick="showBooking()">Book Service</button>
+</section>
+
+<!-- BOOK -->
+<section id="bookingSection" class="booking" style="display:none;">
+  <div class="card">
+    <h2>Book a Service</h2>
+
+    <form id="form">
+      <input id="name" placeholder="Name" required>
+      <input id="service" placeholder="Service" required>
+      <input id="phone" placeholder="Phone" required>
+      <button id="btn">Book Now</button>
+    </form>
+
+    <div id="loading" style="display:none;">⏳ Booking...</div>
+  </div>
+</section>
+
+<!-- BOOKINGS -->
+<section id="myBookingsSection" style="display:none;">
+  <h2 style="text-align:center;">My Bookings</h2>
+  <div id="bookingList" class="grid"></div>
+</section>
+
+<!-- POPUP -->
+<div id="popup" class="popup">
+  <div class="popup-box">
+    <h2>🎉 Booking Successful</h2>
+  </div>
+</div>
+
 <script>
+
+// LOGIN CHECK
 if(localStorage.getItem("loggedIn") !== "true"){
   window.location.href = "login.html";
 }
 
-// Navigation
+// NAVIGATION
 function showHome(){
-  homeSection.style.display = "block";
-  bookingSection.style.display = "none";
-  myBookingsSection.style.display = "none";
+  homeSection.style.display="block";
+  bookingSection.style.display="none";
+  myBookingsSection.style.display="none";
 }
 
 function showBooking(){
-  homeSection.style.display = "none";
-  bookingSection.style.display = "flex";
-  myBookingsSection.style.display = "none";
+  homeSection.style.display="none";
+  bookingSection.style.display="flex";
+  myBookingsSection.style.display="none";
 }
 
 function showMyBookings(){
-  homeSection.style.display = "none";
-  bookingSection.style.display = "none";
-  myBookingsSection.style.display = "block";
+  homeSection.style.display="none";
+  bookingSection.style.display="none";
+  myBookingsSection.style.display="block";
   loadBookings();
 }
 
-// ✅ SUBMIT BOOKING
-const formEl = document.getElementById("form");
-
-formEl.addEventListener("submit", async (e)=>{
+// BOOKING
+document.getElementById("form").addEventListener("submit", async (e)=>{
   e.preventDefault();
 
-  const btn = document.getElementById("btn");
-  const loading = document.getElementById("loading");
-
-  btn.style.display = "none";
-  loading.style.display = "block";
+  btn.style.display="none";
+  loading.style.display="block";
 
   const data = {
-    name: document.getElementById("name").value.trim(),
-    service: document.getElementById("service").value.trim(),
-    phone: document.getElementById("phone").value.trim()
+    name: name.value,
+    service: service.value,
+    phone: phone.value
   };
 
   try {
     const res = await fetch("/book", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(data)
+      body: JSON.stringify(data)
     });
 
     if(res.ok){
-      formEl.reset();
-
-      const popup = document.getElementById("popup");
-      popup.style.display = "flex";
+      form.reset();
+      popup.style.display="flex";
 
       setTimeout(()=>{
-        popup.style.display = "none";
+        popup.style.display="none";
         showMyBookings();
       },2000);
 
     } else {
-      alert("❌ Booking failed");
+      alert("Failed");
     }
 
   } catch(err){
-    console.error(err);
-    alert("⚠️ Server not reachable");
+    alert("Server error");
   }
 
-  loading.style.display = "none";
-  btn.style.display = "block";
+  loading.style.display="none";
+  btn.style.display="block";
 });
 
-// ✅ LOAD BOOKINGS
+// LOAD BOOKINGS
 async function loadBookings(){
-  try {
-    const res = await fetch("/bookings");
-    const data = await res.json();
+  const res = await fetch("/bookings");
+  const data = await res.json();
 
-    bookingList.innerHTML = "";
+  bookingList.innerHTML="";
 
-    data.forEach(b=>{
-      const div = document.createElement("div");
-      div.className = "booking-card";
+  data.forEach(b=>{
+    const div=document.createElement("div");
+    div.className="booking-card";
 
-      div.innerHTML = `
-        <h3>✅ Booked</h3>
-        <p><b>Name:</b> ${b.name}</p>
-        <p><b>Phone:</b> ${b.phone}</p>
-        <p><b>Service:</b> ${b.service || "N/A"}</p>
-      `;
+    div.innerHTML=`
+      <h3>✅ Booked</h3>
+      <p>${b.name}</p>
+      <p>${b.phone}</p>
+      <p>${b.service}</p>
+    `;
 
-      bookingList.appendChild(div);
-    });
-
-  } catch(err){
-    console.log(err);
-  }
+    bookingList.appendChild(div);
+  });
 }
 
 function logout(){
   localStorage.removeItem("loggedIn");
-  window.location.href = "login.html";
+  window.location.href="login.html";
 }
+
 </script>
+
+</body>
+</html>
