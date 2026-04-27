@@ -4,14 +4,23 @@ const cors = require("cors");
 const path = require("path");
 
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// ✅ Serve frontend files
+// ✅ Serve frontend (HTML, CSS, JS)
 app.use(express.static(__dirname));
 
-// ✅ MongoDB Connection
-mongoose.connect("mongodb+srv://akshaysharma200508_db_user:1234abcd@cluster0.sek1a7l.mongodb.net/hometech?retryWrites=true&w=majority")
+// ✅ Home route (fixes "Cannot GET /")
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// ✅ MongoDB Connection (use env in production)
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://akshaysharma200508_db_user:1234abcd@cluster0.sek1a7l.mongodb.net/hometech?retryWrites=true&w=majority";
+
+mongoose.connect(MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
 .catch(err => console.log(err));
 
@@ -29,23 +38,24 @@ app.post("/book", async (req, res) => {
     await data.save();
     res.send("Saved");
   } catch (err) {
-    res.status(500).send("Error");
+    console.error(err);
+    res.status(500).send("Error saving booking");
   }
 });
 
 // ✅ Get bookings
 app.get("/bookings", async (req, res) => {
-  const data = await Booking.find();
-  res.json(data);
+  try {
+    const data = await Booking.find();
+    res.json(data);
+  } catch (err) {
+    res.status(500).send("Error fetching bookings");
+  }
 });
 
-// ✅ Fix "Cannot GET /"
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
-// ✅ Render PORT FIX
+// ✅ IMPORTANT: Render dynamic port
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
