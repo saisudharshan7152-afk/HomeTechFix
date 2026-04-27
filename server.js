@@ -1,18 +1,26 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// ✅ Use ENV variable (IMPORTANT)
-const MONGO_URI = process.env.MONGO_URI;
+// ✅ Serve frontend files (HTML, CSS, JS)
+app.use(express.static(__dirname));
 
-// Connect MongoDB
-mongoose.connect(MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+// ✅ Homepage route (fixes "Cannot GET /")
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// ✅ MongoDB Connection
+mongoose.connect("mongodb+srv://akshaysharma200508_db_user:1234abcd@cluster0.sek1a7l.mongodb.net/hometech?retryWrites=true&w=majority")
+.then(() => console.log("MongoDB Connected"))
+.catch(err => console.log(err));
 
 // Schema
 const Booking = mongoose.model("Booking", {
@@ -21,30 +29,30 @@ const Booking = mongoose.model("Booking", {
   phone: String
 });
 
-// Save booking
+// ✅ Save booking
 app.post("/book", async (req, res) => {
   try {
     const data = new Booking(req.body);
     await data.save();
     res.send("Saved");
   } catch (err) {
-    res.status(500).send("Error saving");
+    res.status(500).send("Error saving data");
   }
 });
 
-// Get bookings
+// ✅ Get bookings
 app.get("/bookings", async (req, res) => {
   try {
     const data = await Booking.find();
     res.json(data);
   } catch (err) {
-    res.status(500).send("Error fetching");
+    res.status(500).send("Error fetching data");
   }
 });
 
-// ✅ IMPORTANT: Use Render PORT
+// ✅ IMPORTANT for Render (dynamic port)
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+  console.log("Server running on " + PORT);
 });
