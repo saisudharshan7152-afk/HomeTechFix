@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HomeTech Fix</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="nav">
+    <div class="logo">
+        <img src="logo.png" alt="HomeTech Fix Logo">
+        <h1>HomeTech Fix</h1>
+      </div>
+  <nav>
+    <a href="#" onclick="logout()">Logout</a>
+    <a href="#" onclick="showHome()">Home</a>
+    <a href="#" onclick="showBooking()">Book</a>
+    <a href="#" onclick="showMyBookings()">My Bookings</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section id="homeSection" class="hero">
+  <h2>Fix Your Home, The Smart Way</h2>
+  <p>Fast • Reliable • Verified Technicians</p>
+  <button onclick="showBooking()">Book Service</button>
+</section>
+
+<!-- BOOK -->
+<section id="bookingSection" class="booking" style="display:none;">
+  <div class="card">
+    <h2>Book a Service</h2>
+
+    <form id="form">
+      <input type="text" id="name" placeholder="Your Name" required>
+      <input type="text" id="service" placeholder="Service Type" required>
+      <input type="text" id="phone" placeholder="Phone Number" required>
+      <button type="submit" id="btn">Book Now</button>
+    </form>
+
+    <!-- LOADING -->
+    <div id="loading" style="display:none;">⏳ Booking...</div>
+  </div>
+</section>
+
+<!-- BOOKINGS -->
+<section id="myBookingsSection" class="bookings" style="display:none;">
+  <h2>My Bookings</h2>
+  <div id="bookingList" class="grid"></div>
+</section>
+
+<!-- SUCCESS POPUP -->
+<div id="popup" class="popup">
+  <div class="popup-box">
+    <h2>🎉 Booking Confirmed!</h2>
+    <p>Your service has been booked successfully.</p>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 HomeTech Fix</p>
+</footer>
+
+<script>
+    // 🔐 Check login
+if(localStorage.getItem("loggedIn") !== "true"){
+  window.location.href = "login.html";
+}
+
+// Navigation
+function showHome(){
+  homeSection.style.display = "block";
+  bookingSection.style.display = "none";
+  myBookingsSection.style.display = "none";
+}
+
+function showBooking(){
+  homeSection.style.display = "none";
+  bookingSection.style.display = "flex";
+  myBookingsSection.style.display = "none";
+}
+
+function showMyBookings(){
+  homeSection.style.display = "none";
+  bookingSection.style.display = "none";
+  myBookingsSection.style.display = "block";
+  loadBookings();
+}
+
+// Submit
+const formEl = document.getElementById("form");
+
+formEl.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+
+  const btn = document.getElementById("btn");
+  const loading = document.getElementById("loading");
+
+  btn.style.display = "none";
+  loading.style.display = "block";
+
+  const data = {
+    name: document.getElementById("name").value.trim(),
+    service: document.getElementById("service").value.trim(),
+    phone: document.getElementById("phone").value.trim()
+  };
+
+  const res = await fetch("http://localhost:3000/book", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(data)
+  });
+
+  if(res.ok){
+    formEl.reset();
+
+    // SHOW POPUP
+    const popup = document.getElementById("popup");
+    popup.style.display = "flex";
+
+    // Hide popup after 2 sec + redirect
+    setTimeout(()=>{
+      popup.style.display = "none";
+      showMyBookings();
+    },2000);
+  }
+
+  loading.style.display = "none";
+  btn.style.display = "block";
+});
+
+// Load bookings
+async function loadBookings(){
+  const res = await fetch("http://localhost:3000/bookings");
+  const data = await res.json();
+
+  bookingList.innerHTML = "";
+
+  data.forEach(b=>{
+    const div = document.createElement("div");
+    div.className = "booking-card";
+
+    div.innerHTML = `
+      <h3>✅ Booked</h3>
+      <p><b>Name:</b> ${b.name}</p>
+      <p><b>Phone:</b> ${b.phone}</p>
+      <p><b>Service:</b> ${b.service || "N/A"}</p>
+    `;
+
+    bookingList.appendChild(div);
+  });
+}
+function logout(){
+  localStorage.removeItem("loggedIn");
+  window.location.href = "login.html";
+}
+
+</script>
+
+</body>
+</html>

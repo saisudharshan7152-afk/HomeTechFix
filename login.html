@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HomeTech Fix - Auth</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+.login-logo{
+  width:80px;
+  border-radius:50%;
+  margin-bottom:10px;
+  animation: pop 1s ease;
+}
+/* BACKGROUND */
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins', sans-serif;
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  overflow:hidden;
+}
+
+/* ANIMATED BUBBLES */
+body::before, body::after{
+  content:"";
+  position:absolute;
+  width:400px;
+  height:400px;
+  background:rgba(255,255,255,0.1);
+  border-radius:50%;
+  animation: float 10s infinite alternate;
+}
+
+body::before{
+  top:-100px;
+  left:-100px;
+}
+
+body::after{
+  bottom:-100px;
+  right:-100px;
+}
+
+@keyframes float{
+  from{transform: translateY(0);}
+  to{transform: translateY(50px);}
+}
+
+/* CARD */
+.card{
+  background: rgba(255,255,255,0.1);
+  padding:40px;
+  border-radius:20px;
+  backdrop-filter: blur(20px);
+  width:320px;
+  text-align:center;
+  color:white;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* INPUT */
+.input-box{
+  position:relative;
+  margin:15px 0;
+}
+
+.input-box input{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  outline:none;
+}
+
+/* BUTTON */
+button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  background: linear-gradient(135deg,#0ea5e9,#6366f1);
+  color:white;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  transform:scale(1.05);
+}
+
+/* TOGGLE */
+.toggle{
+  margin-top:15px;
+  cursor:pointer;
+  color:#e0f2fe;
+}
+
+/* ERROR */
+.error{
+  color:#ff6b6b;
+  display:none;
+  font-size:14px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <img src="logo.png" class="login-logo">
+
+  <!-- LOGIN -->
+  <div id="loginBox">
+    <h2>Welcome Back 👋</h2>
+
+    <div class="input-box">
+      <input type="text" id="loginUser" placeholder="Username">
+    </div>
+
+    <div class="input-box">
+      <input type="password" id="loginPass" placeholder="Password">
+    </div>
+
+    <button onclick="login()">Login</button>
+
+    <p id="loginError" class="error">Invalid credentials</p>
+
+    <p class="toggle" onclick="switchToRegister()">Create Account →</p>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="registerBox" style="display:none;">
+    <h2>Create Account 🚀</h2>
+
+    <div class="input-box">
+      <input type="text" id="regUser" placeholder="Username">
+    </div>
+
+    <div class="input-box">
+      <input type="password" id="regPass" placeholder="Password">
+    </div>
+
+    <button onclick="register()">Register</button>
+
+    <p id="regError" class="error">User already exists</p>
+
+    <p class="toggle" onclick="switchToLogin()">← Back to Login</p>
+  </div>
+
+</div>
+
+<script>
+
+// SWITCH WITH ANIMATION
+function switchToRegister(){
+  loginBox.style.display="none";
+  registerBox.style.display="block";
+}
+
+function switchToLogin(){
+  registerBox.style.display="none";
+  loginBox.style.display="block";
+}
+
+// REGISTER
+function register(){
+  const user = regUser.value.trim();
+  const pass = regPass.value.trim();
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  if(users.find(u => u.username === user)){
+    regError.style.display="block";
+    return;
+  }
+
+  users.push({username:user, password:pass});
+  localStorage.setItem("users", JSON.stringify(users));
+
+  alert("🎉 Registered!");
+  switchToLogin();
+}
+
+// LOGIN
+function login(){
+  const user = loginUser.value.trim();
+  const pass = loginPass.value.trim();
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  const valid = users.find(u => u.username===user && u.password===pass);
+
+  if(valid){
+    localStorage.setItem("loggedIn","true");
+    window.location.href="index.html";
+  } else {
+    loginError.style.display="block";
+  }
+}
+
+</script>
+
+</body>
+</html>
