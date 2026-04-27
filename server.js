@@ -4,18 +4,11 @@ const cors = require("cors");
 const path = require("path");
 
 const app = express();
-
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// ✅ Serve frontend files (HTML, CSS, JS)
+// ✅ Serve frontend files
 app.use(express.static(__dirname));
-
-// ✅ Homepage route (fixes "Cannot GET /")
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
 
 // ✅ MongoDB Connection
 mongoose.connect("mongodb+srv://akshaysharma200508_db_user:1234abcd@cluster0.sek1a7l.mongodb.net/hometech?retryWrites=true&w=majority")
@@ -36,23 +29,23 @@ app.post("/book", async (req, res) => {
     await data.save();
     res.send("Saved");
   } catch (err) {
-    res.status(500).send("Error saving data");
+    res.status(500).send("Error");
   }
 });
 
 // ✅ Get bookings
 app.get("/bookings", async (req, res) => {
-  try {
-    const data = await Booking.find();
-    res.json(data);
-  } catch (err) {
-    res.status(500).send("Error fetching data");
-  }
+  const data = await Booking.find();
+  res.json(data);
 });
 
-// ✅ IMPORTANT for Render (dynamic port)
-const PORT = process.env.PORT || 3000;
+// ✅ Fix "Cannot GET /"
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 
+// ✅ Render PORT FIX
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log("Server running on " + PORT);
+  console.log(`Server running on ${PORT}`);
 });
