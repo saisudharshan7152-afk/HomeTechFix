@@ -2,115 +2,230 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>HomeTech Fix - Auth</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HomeTech Fix Login</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-.login-logo{
-  width:80px;
-  border-radius:50%;
-  margin-bottom:10px;
-  animation: pop 1s ease;
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
 }
-/* BACKGROUND */
+
 body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-family:'Poppins', sans-serif;
-  background: linear-gradient(135deg, #0ea5e9, #6366f1);
-  overflow:hidden;
+height:100vh;
+display:flex;
+background:#020617;
+overflow:hidden;
 }
 
-/* ANIMATED BUBBLES */
-body::before, body::after{
-  content:"";
-  position:absolute;
-  width:400px;
-  height:400px;
-  background:rgba(255,255,255,0.1);
-  border-radius:50%;
-  animation: float 10s infinite alternate;
+/* LEFT PANEL */
+
+.left{
+flex:1;
+background:
+linear-gradient(rgba(2,6,23,0.8),
+rgba(2,6,23,0.9)),
+url('https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=2070');
+
+background-size:cover;
+background-position:center;
+
+display:flex;
+flex-direction:column;
+justify-content:center;
+padding:60px;
+color:white;
+position:relative;
 }
 
-body::before{
-  top:-100px;
-  left:-100px;
+.left h1{
+font-size:60px;
+line-height:1.1;
+margin-bottom:20px;
 }
 
-body::after{
-  bottom:-100px;
-  right:-100px;
+.left p{
+font-size:18px;
+color:#cbd5e1;
+max-width:500px;
+}
+
+.features{
+margin-top:40px;
+}
+
+.features div{
+margin:15px 0;
+font-size:18px;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+/* FLOATING CIRCLES */
+
+.circle{
+position:absolute;
+border-radius:50%;
+background:rgba(255,255,255,0.08);
+animation:float 6s infinite alternate;
+}
+
+.c1{
+width:200px;
+height:200px;
+top:50px;
+right:50px;
+}
+
+.c2{
+width:120px;
+height:120px;
+bottom:50px;
+left:50px;
+animation-delay:2s;
 }
 
 @keyframes float{
-  from{transform: translateY(0);}
-  to{transform: translateY(50px);}
+from{
+transform:translateY(0px);
+}
+to{
+transform:translateY(30px);
+}
+}
+
+/* RIGHT PANEL */
+
+.right{
+width:420px;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#0f172a;
+position:relative;
 }
 
 /* CARD */
+
 .card{
-  background: rgba(255,255,255,0.1);
-  padding:40px;
-  border-radius:20px;
-  backdrop-filter: blur(20px);
-  width:320px;
-  text-align:center;
-  color:white;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-  animation: fadeIn 1s ease;
+width:340px;
+background:rgba(255,255,255,0.05);
+padding:40px;
+border-radius:25px;
+backdrop-filter:blur(20px);
+box-shadow:0 10px 40px rgba(0,0,0,0.4);
+animation:fadeIn 1s ease;
 }
 
 @keyframes fadeIn{
-  from{opacity:0; transform:translateY(20px);}
-  to{opacity:1; transform:translateY(0);}
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
-/* INPUT */
+.logo{
+text-align:center;
+margin-bottom:20px;
+}
+
+.logo img{
+width:80px;
+height:80px;
+border-radius:50%;
+box-shadow:0 0 20px rgba(14,165,233,0.5);
+}
+
+.card h2{
+text-align:center;
+color:white;
+margin-bottom:30px;
+}
+
 .input-box{
-  position:relative;
-  margin:15px 0;
+margin-bottom:20px;
 }
 
 .input-box input{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  outline:none;
+width:100%;
+padding:14px;
+border:none;
+outline:none;
+border-radius:12px;
+background:#1e293b;
+color:white;
+font-size:15px;
+}
+
+.input-box input::placeholder{
+color:#94a3b8;
 }
 
 /* BUTTON */
+
 button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:8px;
-  background: linear-gradient(135deg,#0ea5e9,#6366f1);
-  color:white;
-  cursor:pointer;
-  transition:0.3s;
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+background:linear-gradient(135deg,#0ea5e9,#6366f1);
+color:white;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
 }
 
 button:hover{
-  transform:scale(1.05);
+transform:scale(1.03);
 }
 
 /* TOGGLE */
+
 .toggle{
-  margin-top:15px;
-  cursor:pointer;
-  color:#e0f2fe;
+margin-top:20px;
+text-align:center;
+color:#cbd5e1;
+cursor:pointer;
+}
+
+.toggle span{
+color:#38bdf8;
+font-weight:600;
 }
 
 /* ERROR */
+
 .error{
-  color:#ff6b6b;
-  display:none;
-  font-size:14px;
+color:#ef4444;
+margin-top:10px;
+display:none;
+text-align:center;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+.left{
+display:none;
+}
+
+.right{
+width:100%;
+}
+
 }
 
 </style>
@@ -118,96 +233,188 @@ button:hover{
 
 <body>
 
+<!-- LEFT -->
+
+<div class="left">
+
+<div class="circle c1"></div>
+<div class="circle c2"></div>
+
+<h1>HomeTech Fix</h1>
+
+<p>
+Book trusted home repair professionals instantly.
+Track technicians live and get premium service at your doorstep.
+</p>
+
+<div class="features">
+<div>⚡ Instant Booking</div>
+<div>📍 Live Technician Tracking</div>
+<div>⭐ Verified Experts</div>
+<div>🛡 Secure & Reliable</div>
+</div>
+
+</div>
+
+<!-- RIGHT -->
+
+<div class="right">
+
 <div class="card">
-    <img src="logo.png" class="login-logo">
 
-  <!-- LOGIN -->
-  <div id="loginBox">
-    <h2>Welcome Back 👋</h2>
+<div class="logo">
+<img src="logo.png">
+</div>
 
-    <div class="input-box">
-      <input type="text" id="loginUser" placeholder="Username">
-    </div>
+<!-- LOGIN -->
 
-    <div class="input-box">
-      <input type="password" id="loginPass" placeholder="Password">
-    </div>
+<div id="loginBox">
 
-    <button onclick="login()">Login</button>
+<h2>Welcome Back 👋</h2>
 
-    <p id="loginError" class="error">Invalid credentials</p>
+<div class="input-box">
+<input type="text" id="loginUser" placeholder="Username">
+</div>
 
-    <p class="toggle" onclick="switchToRegister()">Create Account →</p>
-  </div>
+<div class="input-box">
+<input type="password" id="loginPass" placeholder="Password">
+</div>
 
-  <!-- REGISTER -->
-  <div id="registerBox" style="display:none;">
-    <h2>Create Account 🚀</h2>
+<button onclick="login()">Login</button>
 
-    <div class="input-box">
-      <input type="text" id="regUser" placeholder="Username">
-    </div>
+<p id="loginError" class="error">
+Invalid credentials
+</p>
 
-    <div class="input-box">
-      <input type="password" id="regPass" placeholder="Password">
-    </div>
+<p class="toggle">
+New here?
+<span onclick="switchToRegister()">Create Account</span>
+</p>
 
-    <button onclick="register()">Register</button>
+</div>
 
-    <p id="regError" class="error">User already exists</p>
+<!-- REGISTER -->
 
-    <p class="toggle" onclick="switchToLogin()">← Back to Login</p>
-  </div>
+<div id="registerBox" style="display:none;">
+
+<h2>Create Account 🚀</h2>
+
+<div class="input-box">
+<input type="text" id="regUser" placeholder="Username">
+</div>
+
+<div class="input-box">
+<input type="password" id="regPass" placeholder="Password">
+</div>
+
+<button onclick="register()">Register</button>
+
+<p id="regError" class="error">
+User already exists
+</p>
+
+<p class="toggle">
+Already have account?
+<span onclick="switchToLogin()">Login</span>
+</p>
+
+</div>
+
+</div>
 
 </div>
 
 <script>
+  // ADMIN LOGIN
 
-// SWITCH WITH ANIMATION
+const ADMIN = {
+  username: "admin",
+  password: "admin123"
+};
+
+// SWITCH
+
 function switchToRegister(){
-  loginBox.style.display="none";
-  registerBox.style.display="block";
+loginBox.style.display="none";
+registerBox.style.display="block";
 }
 
 function switchToLogin(){
-  registerBox.style.display="none";
-  loginBox.style.display="block";
+registerBox.style.display="none";
+loginBox.style.display="block";
 }
 
 // REGISTER
+
 function register(){
-  const user = regUser.value.trim();
-  const pass = regPass.value.trim();
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+const user=regUser.value.trim();
+const pass=regPass.value.trim();
 
-  if(users.find(u => u.username === user)){
-    regError.style.display="block";
-    return;
-  }
+let users=
+JSON.parse(localStorage.getItem("users")) || [];
 
-  users.push({username:user, password:pass});
-  localStorage.setItem("users", JSON.stringify(users));
+if(users.find(u=>u.username===user)){
 
-  alert("🎉 Registered!");
-  switchToLogin();
+regError.style.display="block";
+return;
+
+}
+
+users.push({
+username:user,
+password:pass
+});
+
+localStorage.setItem("users",
+JSON.stringify(users));
+
+alert("🎉 Registered Successfully");
+
+switchToLogin();
+
 }
 
 // LOGIN
+
 function login(){
-  const user = loginUser.value.trim();
-  const pass = loginPass.value.trim();
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+const user = loginUser.value.trim();
+const pass = loginPass.value.trim();
 
-  const valid = users.find(u => u.username===user && u.password===pass);
+// ✅ ADMIN LOGIN
+if(user === ADMIN.username &&
+   pass === ADMIN.password){
 
-  if(valid){
-    localStorage.setItem("loggedIn","true");
-    window.location.href="index.html";
-  } else {
-    loginError.style.display="block";
-  }
+localStorage.setItem("admin","true");
+
+window.location.href = "admin.html";
+
+return;
+}
+
+// NORMAL USERS
+let users =
+JSON.parse(localStorage.getItem("users")) || [];
+
+const valid =
+users.find(u =>
+u.username === user &&
+u.password === pass
+);
+
+if(valid){
+
+localStorage.setItem("loggedIn","true");
+
+window.location.href="index.html";
+
+}else{
+
+loginError.style.display="block";
+
+}
+
 }
 
 </script>
