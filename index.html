@@ -3,246 +3,339 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>HomeTech Fix</title>
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0a0f2c;
-  color: white;
-}
+<link rel="stylesheet" href="style.css">
 
-.nav {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px;
-  background: #060b22;
-}
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
-.logo {
-  display: flex;
-  align-items: center;
-}
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-.logo img {
-  width: 40px;
-  margin-right: 10px;
-}
-
-nav a {
-  color: white;
-  margin: 10px;
-  cursor: pointer;
-}
-
-.hero {
-  text-align: center;
-  margin-top: 80px;
-}
-
-.booking {
-  display: flex;
-  justify-content: center;
-  margin-top: 50px;
-}
-
-.card {
-  background: #1c223d;
-  padding: 30px;
-  border-radius: 10px;
-}
-
-input {
-  display: block;
-  margin: 10px 0;
-  padding: 10px;
-  width: 250px;
-}
-
-button {
-  padding: 10px;
-  width: 100%;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.popup {
-  display: none;
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.6);
-  justify-content: center;
-  align-items: center;
-}
-
-.popup-box {
-  background: white;
-  color: black;
-  padding: 30px;
-  border-radius: 10px;
-}
-
-.grid {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.booking-card {
-  background: #1c223d;
-  padding: 15px;
-  margin: 10px;
-}
-</style>
 </head>
 
 <body>
 
 <header class="nav">
-  <div class="logo">
-    <img src="logo.png">
-    <h2>HomeTech Fix</h2>
-  </div>
 
-  <nav>
-    <a onclick="logout()">Logout</a>
-    <a onclick="showHome()">Home</a>
-    <a onclick="showBooking()">Book</a>
-    <a onclick="showMyBookings()">My Bookings</a>
-  </nav>
+<div class="logo">
+<img src="logo.png">
+<h2>HomeTech Fix</h2>
+</div>
+
+<nav>
+<a onclick="showHome()">Home</a>
+<a onclick="showBooking()">Book</a>
+<a onclick="showMyBookings()">My Bookings</a>
+<a onclick="logout()">Logout</a>
+</nav>
+
 </header>
 
-<!-- HOME -->
+<!-- HERO -->
+
 <section id="homeSection" class="hero">
-  <h2>Fix Your Home, The Smart Way</h2>
-  <button onclick="showBooking()">Book Service</button>
+
+<h1>Premium Home Services</h1>
+
+<p>Track technicians live • Instant booking • Verified experts</p>
+
+<button onclick="showBooking()">Book Now</button>
+
 </section>
 
-<!-- BOOK -->
+<!-- SERVICES -->
+
+<section class="services">
+
+<div class="service-card">
+<h3>⚡ Electrician</h3>
+<p>Fast electrical repairs</p>
+</div>
+
+<div class="service-card">
+<h3>🚿 Plumbing</h3>
+<p>Leak & pipe fixing</p>
+</div>
+
+<div class="service-card">
+<h3>❄ AC Repair</h3>
+<p>Cooling solutions</p>
+</div>
+
+<div class="service-card">
+<h3>🧹 Cleaning</h3>
+<p>Professional cleaning</p>
+</div>
+
+</section>
+
+<!-- BOOKING -->
+
 <section id="bookingSection" class="booking" style="display:none;">
-  <div class="card">
-    <h2>Book a Service</h2>
 
-    <form id="form">
-      <input id="name" placeholder="Name" required>
-      <input id="service" placeholder="Service" required>
-      <input id="phone" placeholder="Phone" required>
-      <button id="btn">Book Now</button>
-    </form>
+<div class="card">
 
-    <div id="loading" style="display:none;">⏳ Booking...</div>
-  </div>
+<h2>Book Service</h2>
+
+<form id="form">
+
+<input id="name" placeholder="Your Name" required>
+
+<select id="service">
+
+<option>Electrician</option>
+<option>Plumbing</option>
+<option>AC Repair</option>
+<option>Cleaning</option>
+
+</select>
+
+<input id="phone" placeholder="Phone Number" required>
+
+<button id="btn">Book Now</button>
+
+</form>
+
+<div id="loading" style="display:none;">
+⏳ Booking...
+</div>
+
+</div>
+
 </section>
 
 <!-- BOOKINGS -->
-<section id="myBookingsSection" style="display:none;">
-  <h2 style="text-align:center;">My Bookings</h2>
-  <div id="bookingList" class="grid"></div>
+
+<section id="myBookingsSection" class="bookings"
+style="display:none;">
+
+<h2>My Bookings</h2>
+
+<div id="bookingList" class="grid"></div>
+
+</section>
+
+<!-- TRACKING -->
+
+<section id="trackingSection"
+style="display:none; padding:30px;">
+
+<h2>📍 Live Technician Tracking</h2>
+
+<p id="etaText">
+Technician arriving in 15 mins
+</p>
+
+<div id="map"></div>
+
 </section>
 
 <!-- POPUP -->
+
 <div id="popup" class="popup">
-  <div class="popup-box">
-    <h2>🎉 Booking Successful</h2>
-  </div>
+
+<div class="popup-box">
+
+<h2>🎉 Booking Confirmed</h2>
+
+<p>Technician assigned successfully</p>
+
+</div>
+
 </div>
 
 <script>
 
 // LOGIN CHECK
 if(localStorage.getItem("loggedIn") !== "true"){
-  window.location.href = "login.html";
+window.location.href="login.html";
 }
 
 // NAVIGATION
+
 function showHome(){
-  homeSection.style.display="block";
-  bookingSection.style.display="none";
-  myBookingsSection.style.display="none";
+homeSection.style.display="block";
+bookingSection.style.display="none";
+myBookingsSection.style.display="none";
+trackingSection.style.display="none";
 }
 
 function showBooking(){
-  homeSection.style.display="none";
-  bookingSection.style.display="flex";
-  myBookingsSection.style.display="none";
+homeSection.style.display="none";
+bookingSection.style.display="flex";
+myBookingsSection.style.display="none";
 }
 
 function showMyBookings(){
-  homeSection.style.display="none";
-  bookingSection.style.display="none";
-  myBookingsSection.style.display="block";
-  loadBookings();
+homeSection.style.display="none";
+bookingSection.style.display="none";
+myBookingsSection.style.display="block";
+loadBookings();
 }
 
 // BOOKING
-document.getElementById("form").addEventListener("submit", async (e)=>{
-  e.preventDefault();
 
-  btn.style.display="none";
-  loading.style.display="block";
+document.getElementById("form")
+.addEventListener("submit", async (e)=>{
 
-  const data = {
-    name: name.value,
-    service: service.value,
-    phone: phone.value
-  };
+e.preventDefault();
 
-  try {
-    const res = await fetch("/book", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify(data)
-    });
+btn.style.display="none";
+loading.style.display="block";
 
-    if(res.ok){
-      form.reset();
-      popup.style.display="flex";
+const data = {
+name:name.value,
+service:service.value,
+phone:phone.value
+};
 
-      setTimeout(()=>{
-        popup.style.display="none";
-        showMyBookings();
-      },2000);
+try{
 
-    } else {
-      alert("Failed");
-    }
+const res = await fetch("/book",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(data)
+});
 
-  } catch(err){
-    alert("Server error");
-  }
+if(res.ok){
 
-  loading.style.display="none";
-  btn.style.display="block";
+form.reset();
+
+popup.style.display="flex";
+
+setTimeout(()=>{
+popup.style.display="none";
+showMyBookings();
+startTracking();
+},2000);
+
+}
+
+}catch(err){
+alert("Booking Failed");
+}
+
+loading.style.display="none";
+btn.style.display="block";
+
 });
 
 // LOAD BOOKINGS
+
 async function loadBookings(){
-  const res = await fetch("/bookings");
-  const data = await res.json();
 
-  bookingList.innerHTML="";
+const res = await fetch("/bookings");
 
-  data.forEach(b=>{
-    const div=document.createElement("div");
-    div.className="booking-card";
+const data = await res.json();
 
-    div.innerHTML=`
-      <h3>✅ Booked</h3>
-      <p>${b.name}</p>
-      <p>${b.phone}</p>
-      <p>${b.service}</p>
-    `;
+bookingList.innerHTML = "";
 
-    bookingList.appendChild(div);
-  });
+data.forEach(b=>{
+
+  const div = document.createElement("div");
+
+  div.className = "booking-card";
+
+  div.innerHTML = `
+
+    <h3>✅ ${b.status}</h3>
+
+    <p><b>Service:</b> ${b.service}</p>
+
+    <p><b>Customer:</b> ${b.name}</p>
+
+    <p><b>Phone:</b> ${b.phone}</p>
+
+    <hr>
+
+    <p>👨‍🔧 ${b.technician}</p>
+
+    <p>${b.rating}</p>
+
+    <p>⏱ ETA: ${b.eta}</p>
+
+    <p>📞 ${b.techPhone}</p>
+
+    <button onclick="startTracking()">
+    📍 Track Technician
+    </button>
+
+    <button onclick="window.open('tel:${b.techPhone}')">
+    📞 Call Technician
+    </button>
+
+  `;
+
+  bookingList.appendChild(div);
+
+});
+
 }
 
+// MAP TRACKING
+
+function startTracking(){
+
+trackingSection.style.display="block";
+
+const map = L.map('map').setView([17.3850,78.4867],13);
+
+L.tileLayer(
+'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+).addTo(map);
+
+const marker = L.marker([17.3850,78.4867])
+.addTo(map);
+
+marker.bindPopup(
+"👨‍🔧 Technician On The Way"
+).openPopup();
+
+let lat=17.3850;
+let lng=78.4867;
+
+let eta=15;
+
+setInterval(()=>{
+
+lat += 0.001;
+lng += 0.001;
+
+marker.setLatLng([lat,lng]);
+
+eta--;
+
+if(eta>0){
+
+etaText.innerText=
+`⏱ Technician arriving in ${eta} mins`;
+
+}else{
+
+etaText.innerText=
+"✅ Technician Arrived";
+
+}
+
+},3000);
+
+}
+
+// CALL
+
+function callTech(){
+window.open("tel:+919876543210");
+}
+
+// LOGOUT
+
 function logout(){
-  localStorage.removeItem("loggedIn");
-  window.location.href="login.html";
+localStorage.removeItem("loggedIn");
+window.location.href="login.html";
 }
 
 </script>
